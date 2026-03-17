@@ -1,0 +1,80 @@
+# ── DEPENDENCIES ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ── NEXT.JS BUILD OUTPUT ───────────────────────────────────────────────────────
+.next/
+out/
+build/
+dist/
+
+# ── ENVIRONMENT VARIABLES ──────────────────────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ── TYPESCRIPT ─────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ── TESTING ───────────────────────────────────────────────────────────────────
+/coverage
+/.nyc_output
+
+# ── LOGS ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── OS FILES ──────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── EDITOR & IDE ──────────────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ── VERCEL ────────────────────────────────────────────────────────────────────
+.vercel
+
+# ── PACKAGE MANAGER LOCKS (keep only one) ─────────────────────────────────────
+# Uncomment the ones you do NOT use:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ── CACHE ─────────────────────────────────────────────────────────────────────
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.tgz
+
+# ── MISC ──────────────────────────────────────────────────────────────────────
+*.pem
+.turbo/

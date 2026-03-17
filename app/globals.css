@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Brand palette extracted from Harriscom letterhead */
+  --navy: #1B2B6B;
+  --navy-dark: #0F1A44;
+  --navy-light: #2A3D8F;
+  --crimson: #D42B2B;
+  --crimson-light: #E85555;
+  --emerald: #2D8C4E;
+  --emerald-light: #3DAF64;
+  --amber: #F5A623;
+  --amber-light: #FFBE50;
+  --violet: #6B3FA0;
+  --violet-light: #8B5FC0;
+  --teal: #1A7A9A;
+  --teal-light: #2A9ABF;
+  --white: #FFFFFF;
+  --off-white: #F7F8FC;
+  --light-gray: #EEF0F7;
+  --mid-gray: #8A93B2;
+  --text-dark: #0D1333;
+  --text-body: #3A4060;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--light-gray); }
+::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 10px; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: .7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes chatBounce {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-4px); }
+}
+@keyframes typingDot {
+  0%,60%,100% { transform: translateY(0); opacity:.4; }
+  30%         { transform: translateY(-5px); opacity:1; }
+}
+
+.animate-fade-up   { animation: fadeUp .7s ease both; }
+.animate-fade-in   { animation: fadeIn .5s ease both; }
+.animate-slide-right { animation: slideInRight .6s ease both; }
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* Brand gradient stripe  */
+.brand-stripe {
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--emerald) 0%,
+    var(--teal) 18%,
+    var(--navy) 35%,
+    var(--violet) 52%,
+    var(--crimson) 68%,
+    var(--amber) 85%,
+    var(--emerald) 100%
+  );
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(27,43,107,0.1);
+}
+
+/* Chat bubbles */
+.chat-bubble-bot {
+  background: var(--off-white);
+  border: 1px solid rgba(27,43,107,0.1);
+  border-radius: 0 16px 16px 16px;
+  color: var(--text-dark);
+}
+.chat-bubble-user {
+  background: var(--navy);
+  border-radius: 16px 0 16px 16px;
+  color: white;
+}
+
+/* Typing indicator */
+.typing-dot {
+  width: 7px; height: 7px;
+  background: var(--navy);
+  border-radius: 50%;
+  display: inline-block;
+  animation: typingDot 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: .2s; }
+.typing-dot:nth-child(3) { animation-delay: .4s; }
+
+/* Service card hover */
+.service-card {
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(27,43,107,0.15);
+}
+
+/* Nav link underline */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: var(--crimson);
+  transform: scaleX(0);
+  transition: transform .25s ease;
+  transform-origin: left;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+/* Counter number */
+.counter-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Chat widget */
+.chat-widget {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+.chat-window {
+  position: absolute;
+  bottom: calc(100% + 1rem);
+  right: 0;
+  width: 380px;
+  height: 520px;
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(27,43,107,0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+  border: 1px solid rgba(27,43,107,0.12);
+}
+
+@media (max-width: 640px) {
+  .chat-window {
+    width: calc(100vw - 2rem);
+    right: -1rem;
+    height: 460px;
+  }
+}
