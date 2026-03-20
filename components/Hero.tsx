@@ -4,22 +4,22 @@ import { useState, useEffect } from 'react'
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80',
+    image: '/images/hero-5.jpg',
     headline: 'Building Excellence,',
     sub: 'Supplying the Future',
   },
   {
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80',
+    image: '/images/hero-6.jpg',
     headline: 'Nairobi\'s Most',
     sub: 'Trusted Contractor',
   },
   {
-    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80',
-    headline: 'Quality Materials,',
-    sub: 'Reliable Delivery',
+    image: '/images/hero-2.jpg',
+    headline: 'Quality Roads,',
+    sub: 'Connecting Kenya',
   },
   {
-    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&q=80',
+    image: '/images/hero-7.jpg',
     headline: 'From Foundation',
     sub: 'To Finishing',
   },
