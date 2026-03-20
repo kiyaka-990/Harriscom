@@ -7,37 +7,37 @@ const services = [
     num: '01', color: 'var(--navy)',
     title: 'Building Construction',
     desc: 'Residential, commercial, and industrial structures built to the highest standards of quality and safety compliance.',
-    img: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&q=80',
+    img: '/images/project-5.jpeg',
   },
   {
     num: '02', color: 'var(--crimson)',
     title: 'Renovations & Fit-Out',
     desc: 'Complete refurbishment, interior fit-out, and space transformation services for all property types.',
-    img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    img: '/images/project-1.jpeg',
   },
   {
     num: '03', color: 'var(--emerald)',
     title: 'General Supplies',
     desc: 'Procurement and supply of construction materials, hardware, tools, and equipment across Kenya.',
-    img: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&q=80',
+    img: '/images/project-7.jpg',
   },
   {
     num: '04', color: 'var(--teal)',
     title: 'Electrical & Plumbing',
     desc: 'Licensed MEP installations, maintenance and compliance inspections by certified engineers.',
-    img: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80',
+    img: '/images/project-8.jpg',
   },
   {
     num: '05', color: 'var(--violet)',
     title: 'Interior Design',
     desc: 'Modern, functional interiors designed to match client vision, budget, and purpose.',
-    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
+    img: '/images/project-9.jpg',
   },
   {
     num: '06', color: 'var(--amber)',
     title: 'Project Management',
     desc: 'End-to-end supervision ensuring timely delivery, budget adherence, and quality assurance.',
-    img: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?w=600&q=80',
+    img: '/images/hero-1.jpeg',
   },
 ]
 

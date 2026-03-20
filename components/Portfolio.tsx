@@ -3,15 +3,15 @@
 import { useState } from 'react'
 
 const projects = [
-  { id: 1, cat: 'construction', title: 'Office Complex – Westlands', img: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?w=500&q=80', tall: false },
-  { id: 2, cat: 'interior',     title: 'Luxury Apartment Fit-Out',  img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=500&q=80', tall: true  },
-  { id: 3, cat: 'construction', title: 'Commercial Tower – CBD',     img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&q=80', tall: false },
-  { id: 4, cat: 'supply',       title: 'Materials Supply – Mombasa Road', img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=80', tall: false },
-  { id: 5, cat: 'interior',     title: 'Penthouse Renovation',       img: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500&q=80', tall: true  },
-  { id: 6, cat: 'construction', title: 'Industrial Warehouse – Mlolongo', img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&q=80', tall: false },
-  { id: 7, cat: 'supply',       title: 'Hardware & Tools Supply',    img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=500&q=80', tall: false },
-  { id: 8, cat: 'interior',     title: 'Corporate Office Interior',  img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80', tall: false },
-  { id: 9, cat: 'construction', title: 'Residential Apts – Thika Rd', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&q=80', tall: true  },
+  { id: 1, cat: 'construction', title: 'Office Complex – Westlands', img: '/images/service-1.jpeg', tall: false },
+  { id: 2, cat: 'interior',     title: 'Luxury Apartment Fit-Out',  img: '/images/service-2.jpg', tall: true  },
+  { id: 3, cat: 'construction', title: 'Commercial Tower – CBD',     img: '/images/hero-1.jpg', tall: false },
+  { id: 4, cat: 'supply',       title: 'Materials Supply – Mombasa Road', img: '/images/service-3.jpg', tall: false },
+  { id: 5, cat: 'interior',     title: 'Penthouse Renovation',       img: '/images/project-5.jpeg', tall: true  },
+  { id: 6, cat: 'construction', title: 'Industrial Warehouse – Mlolongo', img: '/images/service-4.jpg', tall: false },
+  { id: 7, cat: 'supply',       title: 'Hardware & Tools Supply',    img: '/images/project-7.jpg', tall: false },
+  { id: 8, cat: 'interior',     title: 'Corporate Office Interior',  img: '/images/project-9.jpg', tall: false },
+  { id: 9, cat: 'construction', title: 'Residential Apts – Thika Rd', img: '/images/service-5.jpeg', tall: true  },
 ]
 
 const filters = ['All', 'Construction', 'Interior', 'Supply']
