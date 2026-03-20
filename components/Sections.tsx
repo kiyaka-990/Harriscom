@@ -11,7 +11,7 @@ export function About() {
         <div className="reveal" style={{ position: 'relative' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/about.jpeg"
+            src="/images/about.jpg"
             alt="Harriscom construction project"
             style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', borderRadius: 6, display: 'block' }}
           />
