@@ -71,7 +71,7 @@ export default function Contact() {
           {[
             { icon: '📍', label: 'Address', val: '12th Floor, Bruce House\nStandard Street, Nairobi\nP.O Box 38631-00100', color: 'var(--navy)' },
             { icon: '📞', label: 'Phone', val: '+254 728 392 225', color: 'var(--emerald)' },
-            { icon: '✉️', label: 'Email', val: 'mdjaafar2225@gmail.com', color: 'var(--crimson)' },
+            { icon: '✉️', label: 'Email', val: 'info@harriscomcompany.co.ke', color: 'var(--crimson)' },
             { icon: '🌐', label: 'Website', val: 'www.harriscomcompany.co.ke', color: 'var(--teal)' },
           ].map((c, i) => (
             <div key={c.label} className={`reveal reveal-delay-${i + 1}`} style={{ display: 'flex', gap: '1.2rem', marginBottom: '1.5rem', alignItems: 'flex-start' }}>

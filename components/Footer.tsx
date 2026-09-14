@@ -109,7 +109,7 @@ export default function Footer() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '.9rem' }}>
               {[
                 { icon: '📞', val: '+254 728 392 225' },
-                { icon: '✉️', val: 'mdjaafar2225@gmail.com' },
+                { icon: '✉️', val: 'info@harriscomcompany.co.ke' },
                 { icon: '📍', val: '12th Floor, Bruce House\nStandard Street, Nairobi' },
               ].map(c => (
                 <div key={c.icon} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
