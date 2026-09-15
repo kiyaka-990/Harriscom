@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Column, Icon, Row, Text } from '@once-ui-system/core'
 
+import AccessibilityPanel from '@/components/a11y/AccessibilityPanel'
 import { Logo } from '@/components/brand/Logo'
 import { contact, services } from '@/lib/site'
 
@@ -323,6 +324,8 @@ export default function Navbar() {
               />
               {contact.phone}
             </a>
+
+            <AccessibilityPanel />
 
             <Link
               href="/contact"

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import AccessibilityPanel from '@/components/a11y/AccessibilityPanel'
 import { contact, whatsappLink } from '@/lib/site'
 
 const WHATSAPP_MESSAGE =
@@ -27,8 +26,10 @@ function ArrowUpGlyph() {
 /**
  * Persistent quick actions, anchored bottom-left.
  *
- * Left, not right: the agent launcher owns the bottom-right corner, and three
- * controls stacked under it buried the one that actually starts a conversation.
+ * Left, not right: the agent launcher owns the bottom-right corner, and stacking
+ * controls under it buried the one that actually starts a conversation.
+ * Accessibility settings live in the header instead — a visitor who needs them
+ * should not have to find a floating button first.
  */
 export default function FloatingDock() {
   const [showTop, setShowTop] = useState(false)
@@ -74,8 +75,6 @@ export default function FloatingDock() {
       >
         <WhatsAppGlyph />
       </a>
-
-      <AccessibilityPanel />
     </div>
   )
 }

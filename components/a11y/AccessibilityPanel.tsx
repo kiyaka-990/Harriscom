@@ -67,6 +67,7 @@ export default function AccessibilityPanel() {
   const [speaking, setSpeaking] = useState(false)
   const [canSpeak, setCanSpeak] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     setPrefs(readPrefs())
@@ -85,6 +86,19 @@ export default function AccessibilityPanel() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // A menu hanging off the header has to close on an outside click; as a
+  // bottom-corner button it only ever needed Escape.
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node
+      if (panelRef.current?.contains(target) || triggerRef.current?.contains(target)) return
+      setOpen(false)
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [open])
 
   const update = useCallback((patch: Partial<A11yPrefs>) => {
     setPrefs((current) => {
@@ -136,16 +150,27 @@ export default function AccessibilityPanel() {
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label="Accessibility settings"
         title="Accessibility settings"
-        className="h-fab h-glass"
-        style={{ background: 'var(--h-fab-bg)' }}
+        className="h-glass"
+        style={{
+          display: 'grid',
+          placeItems: 'center',
+          width: 42,
+          height: 42,
+          flex: '0 0 auto',
+          borderRadius: 12,
+          cursor: 'pointer',
+          color: 'var(--neutral-on-background-strong)',
+          background: 'var(--h-fab-bg)',
+        }}
       >
         {/* The universal access mark reads faster than any label at this size. */}
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <circle cx="12" cy="4.2" r="2" />
           <path d="M20 7.4a1 1 0 0 0-1.2-.75l-4.3 1a10.6 10.6 0 0 1-5 0l-4.3-1A1 1 0 0 0 4.7 8.6l4.4 1v3.1l-2 6.7a1 1 0 0 0 1.9.6l1.9-6.2h.2l1.9 6.2a1 1 0 0 0 1.9-.6l-2-6.7V9.6l4.4-1A1 1 0 0 0 20 7.4Z" />
         </svg>
@@ -161,14 +186,17 @@ export default function AccessibilityPanel() {
           padding="20"
           gap="20"
           style={{
+            // Fixed rather than absolute: the trigger lives inside the fixed
+            // header, whose z-index forms a stacking context the panel would
+            // otherwise be trapped under (the agent launcher sits above it).
             position: 'fixed',
-            left: '1.5rem',
-            bottom: 'calc(1.5rem + 4rem)',
-            zIndex: 12,
-            width: 'min(20rem, calc(100vw - 3rem))',
-            maxHeight: 'calc(100dvh - 8rem)',
+            top: 'calc(var(--h-nav-height) + 0.4rem)',
+            right: '1.5rem',
+            zIndex: 13,
+            width: 'min(20rem, calc(100vw - 2rem))',
+            maxHeight: 'calc(100dvh - var(--h-nav-height) - 2rem)',
             overflowY: 'auto',
-            animation: 'h-bubble-in 0.3s cubic-bezier(0.22,1,0.36,1) both',
+            animation: 'h-dropdown-in 0.22s cubic-bezier(0.22,1,0.36,1) both',
           }}
         >
           <Row horizontal="between" vertical="center">
