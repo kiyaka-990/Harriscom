@@ -79,3 +79,6 @@ Desktop.ini
 *.pem
 .turbo/
 .env*
+
+# Local screenshots, not part of the site.
+screenshots/

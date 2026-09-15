@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-    ],
+    // Every image is local to public/images, so no remote patterns are needed.
+    formats: ['image/avif', 'image/webp'],
   },
   // The site moved to Vercel, but mail stays on the cPanel host (41.80.37.8).
   // Sending the old cPanel URLs to the mail host keeps them working instead of 404ing.

@@ -1,82 +1,90 @@
-# Harriscom Company Limited — Next.js Website
+# Harriscom Company Limited — website
 
-Production-ready Next.js 14 site with a **fully self-contained AI chatbot (Harri)** — zero API keys required.
-
-## Quick Start
+Next.js 15 marketing site for a Nairobi construction and general supplies contractor, built on
+[Once UI](https://once-ui.com) with a self-contained sales agent that works with no API key.
 
 ```bash
 npm install
-npm run dev
+npm run dev     # http://localhost:3000
+npm run build   # production build
 ```
 
-Open http://localhost:3000 — that's it! No .env file needed.
+## What is here
 
-## Design Colors (from letterhead)
+| Area | Where |
+|---|---|
+| Company facts, services, projects, FAQs | `lib/site.ts` — single source of truth for every surface |
+| Design tokens, glass, hero, chrome | `app/globals.css` (Once UI tokens + a focused custom layer) |
+| Page chrome (nav, footer, scroll bar, cookies, FABs) | `components/chrome/` |
+| Page sections | `components/sections/` |
+| Contact form + Google Map | `components/contact/` |
+| The agent | `lib/agent/` + `app/api/agent/route.ts` + `components/agent/` |
+| Hero video generation | `scripts/generate-videos.mjs` |
 
-| Token | Hex | Usage |
-|---|---|---|
-| Navy | #1B2B6B | Primary, navbar |
-| Crimson | #D42B2B | CTAs, accents |
-| Emerald | #2D8C4E | Success, checks |
-| Amber | #F5A623 | Stats, gold highlights |
-| Violet | #6B3FA0 | Interior category |
-| Teal | #1A7A9A | Process, info |
+Routes: `/`, `/services`, `/services/[slug]`, `/projects`, `/about`, `/contact`, `/privacy`, plus a
+generated `sitemap.xml`, `robots.txt` and Open Graph image.
 
-## Harri — The Local AI Chatbot
+## Harri, the agent
 
-Harri lives entirely in `lib/harriBrain.ts`. No external API. It uses:
-- **Tokenizer** — lowercases and splits input
-- **Intent classifier** — 35+ intent patterns with fuzzy keyword matching
-- **Response engine** — multi-variant responses to avoid repetition
-- **Simulated delay** — 380–900ms for natural feel
+Harri is an **agentic sales assistant, not a FAQ widget**. Every turn does three things:
 
-### What Harri knows
-Services, pricing (Ksh ranges), location, contact info, company registration (PVT-6LUK5LZD), director details, 12 counties served, 6-step process, payment methods (M-Pesa, bank), warranty periods, materials/suppliers, team composition, sustainability, and greetings in English + Swahili.
+1. **Extract** — pulls service, location, floor area, budget, timeline, name, phone and email out of
+   free text. It understands `3 bedrooms` (→ 135 sqm), `450 sqm`, `2 acres`, `Ksh 4.5m`, Kenyan
+   phone formats, Nairobi estates and counties, and Swahili greetings.
+2. **Answer** — from `lib/agent/knowledge.ts` only. Prices, durations and coverage always come from
+   the deterministic tools in `lib/agent/tools.ts`, so the agent can never invent a number.
+3. **Advance** — a qualification state machine (`greet → discover → qualify → propose → capture →
+   booked`) picks the single next question, never repeats one, produces a costed range as soon as it
+   has service + size, handles price/trust/timeline objections, and emails the finished lead through
+   the same SMTP path as the contact form.
 
-### Extend Harri (add to lib/harriBrain.ts)
-```typescript
-// Add new intent pattern
-{ intent: 'new_topic', keywords: ['word1', 'word2'] }
+**No API key is required** — that path is the default and is fully self-contained. If
+`ANTHROPIC_API_KEY` is set, the route additionally calls Claude (`claude-opus-5`) with the same
+knowledge brief and the same tools, and uses its wording; the local brain still owns slot
+extraction, lead capture and quick replies, and is the answer of record whenever the model call
+fails or is refused. Both paths quote identical figures because both call `lib/agent/tools.ts`.
 
-// Add response
-new_topic: ["Response variant 1", "Response variant 2"]
-```
+To extend what Harri knows, add to `lib/agent/knowledge.ts` and — if it is a question people ask —
+`faqs` in `lib/site.ts`. To add an intent, add a `Pattern` and an `answerFor` case in
+`lib/agent/brain.ts`.
 
-## Project Structure
+## Hero videos
 
-```
-harriscom-nextjs/
-├── app/
-│   ├── globals.css          # Brand tokens + animations
-│   ├── layout.tsx           # Root layout + SEO
-│   ├── page.tsx             # Main page
-│   └── api/contact/         # Contact form API
-├── components/
-│   ├── Navbar.tsx
-│   ├── Hero.tsx             # Fade carousel
-│   ├── StatsBar.tsx         # Animated counters
-│   ├── Services.tsx
-│   ├── Portfolio.tsx        # Filterable masonry
-│   ├── Sections.tsx         # About, Process, WhyUs, Testimonials, CTA
-│   ├── Contact.tsx
-│   ├── ChatBot.tsx          # Harri widget (no API!)
-│   └── Footer.tsx
-├── lib/
-│   └── harriBrain.ts        # Complete AI brain
-└── hooks/useScrollReveal.ts
-```
-
-## Deploy to Vercel
+The carousel plays real `.mp4` clips, not a CSS effect. Harriscom has no stock footage, so
+`scripts/generate-videos.mjs` renders cinematic Ken Burns moves from their own site photography with
+a bundled ffmpeg:
 
 ```bash
-npx vercel
+node scripts/generate-videos.mjs           # render anything missing
+node scripts/generate-videos.mjs --force   # re-encode everything
 ```
 
-No environment variables needed. Optionally add RESEND_API_KEY for email delivery.
+Output lands in `public/video/` (committed). Change the `CLIPS` array in the script to swap sources
+or moves. Only the first clip loads on page load; the rest attach as the carousel reaches them, the
+active clip is the only one playing, and everything pauses when the hero leaves the viewport.
 
-## Company Details
+## Environment variables
 
-- Harriscom Company Limited · PVT-6LUK5LZD
-- Director: Abdi Jafaar Sheikh
-- +254 728 392 225 · mdjaafar2225@gmail.com
-- 12th Floor, Bruce House, Standard Street, Nairobi
+None are required to run or build the site. All are optional:
+
+| Variable | Effect if unset |
+|---|---|
+| `SMTP_USER`, `SMTP_PASS` | Contact form and chat leads fail loudly with a "call us instead" message rather than silently discarding enquiries. |
+| `SMTP_HOST`, `SMTP_PORT` | Default to `webmail.harriscomcompany.co.ke:465` — see the comment in `lib/mail.ts` for why not `mail.*`. |
+| `CONTACT_TO` | Enquiries go to `SMTP_USER`. |
+| `ANTHROPIC_API_KEY` | Harri runs entirely on the local brain. |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | The contact map uses the keyless Google embed. |
+
+## Design notes
+
+- Dark-only by design; the theme is pinned in `app/layout.tsx` rather than following the system.
+- Brand colours (`--h-navy`, `--h-amber`, …) live in `app/globals.css`; Once UI's semantic tokens
+  drive everything else. Brand is mapped to `indigo`, accent to `yellow`, neutral to `slate`.
+- Custom classes are all prefixed `h-` (`h-glass`, `h-liquid`, `h-spotlight`, `h-stripe`).
+- Every animation is disabled under `prefers-reduced-motion`, including hero video playback.
+
+## Company details
+
+Harriscom Company Limited · PVT-6LUK5LZD · Director Abdi Jafaar Sheikh
++254 728 392 225 · info@harriscomcompany.co.ke
+12th Floor, Bruce House, Standard Street, Nairobi · P.O. Box 38631-00100

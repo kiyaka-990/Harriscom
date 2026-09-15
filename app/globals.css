@@ -1,200 +1,504 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap');
+/*
+ * Harriscom design layer.
+ *
+ * Once UI supplies the token system, layout primitives and effects. This file
+ * only adds what Once UI has no primitive for: the brand stripe, the liquid
+ * glass surfaces, the video hero, the agent widget and the floating chrome.
+ */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "@once-ui-system/core/css/tokens.css";
+@import "@once-ui-system/core/css/styles.css";
 
 :root {
-  --font-display: 'Cormorant Garamond', serif;
-  --font-body: 'Outfit', sans-serif;
+  /* Brand colours from the Harriscom letterhead. Once UI's semantic tokens
+     drive the UI; these are for the brand stripe, logo and accent washes. */
+  --h-navy: #1b2b6b;
+  --h-navy-deep: #0b1230;
+  --h-amber: #f5a623;
+  --h-amber-soft: #ffc65c;
+  --h-crimson: #d42b2b;
+  --h-emerald: #2d8c4e;
+  --h-teal: #1a7a9a;
+  --h-violet: #6b3fa0;
 
-  /* Brand palette extracted from Harriscom letterhead */
-  --navy: #1B2B6B;
-  --navy-dark: #0F1A44;
-  --navy-light: #2A3D8F;
-  --crimson: #D42B2B;
-  --crimson-light: #E85555;
-  --emerald: #2D8C4E;
-  --emerald-light: #3DAF64;
-  --amber: #F5A623;
-  --amber-light: #FFBE50;
-  --violet: #6B3FA0;
-  --violet-light: #8B5FC0;
-  --teal: #1A7A9A;
-  --teal-light: #2A9ABF;
-  --white: #FFFFFF;
-  --off-white: #F7F8FC;
-  --light-gray: #EEF0F7;
-  --mid-gray: #8A93B2;
-  --text-dark: #0D1333;
-  --text-body: #3A4060;
+  --h-shell: 84rem;
+  --h-nav-height: 4.5rem;
+
+  /* Bound to the page by the ThemeInit script; typed here so the fonts
+     resolve even before hydration. */
+  --font-heading: var(--font-sora), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-label: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-code: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* The fixed header would otherwise cover anchored section headings. */
+  scroll-padding-top: calc(var(--h-nav-height) + 2rem);
+}
 
 body {
-  font-family: var(--font-body);
-  background: var(--white);
-  color: var(--text-dark);
-  overflow-x: hidden;
+  /* Once UI only sets font-family on body — painting --page-background is the
+     app's job. Without this the dark palette renders on a white page and every
+     heading disappears. */
+  background: var(--page-background);
+  color: var(--neutral-on-background-medium);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--light-gray); }
-::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 10px; }
-
-/* Animations */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes pulse-ring {
-  0%   { transform: scale(1); opacity: .7; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-@keyframes chatBounce {
-  0%,100% { transform: translateY(0); }
-  50%     { transform: translateY(-4px); }
-}
-@keyframes typingDot {
-  0%,60%,100% { transform: translateY(0); opacity:.4; }
-  30%         { transform: translateY(-5px); opacity:1; }
+::selection {
+  background: var(--h-amber);
+  color: #0b1230;
 }
 
-.animate-fade-up   { animation: fadeUp .7s ease both; }
-.animate-fade-in   { animation: fadeIn .5s ease both; }
-.animate-slide-right { animation: slideInRight .6s ease both; }
-
-/* Reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .65s ease, transform .65s ease;
+/* Once UI styles its own controls; this covers the bespoke buttons, links and
+   cards so keyboard users never lose the cursor. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--h-amber);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: .1s; }
-.reveal-delay-2 { transition-delay: .2s; }
-.reveal-delay-3 { transition-delay: .3s; }
-.reveal-delay-4 { transition-delay: .4s; }
 
-/* Brand gradient stripe  */
-.brand-stripe {
-  height: 4px;
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+  background-clip: content-box;
+}
+
+/* ── Brand stripe ───────────────────────────────────────────────────────── */
+
+.h-stripe {
+  height: 3px;
+  width: 100%;
+  flex: 0 0 auto;
   background: linear-gradient(
-    to right,
-    var(--emerald) 0%,
-    var(--teal) 18%,
-    var(--navy) 35%,
-    var(--violet) 52%,
-    var(--crimson) 68%,
-    var(--amber) 85%,
-    var(--emerald) 100%
+    90deg,
+    var(--h-emerald) 0%,
+    var(--h-teal) 18%,
+    var(--h-navy) 35%,
+    var(--h-violet) 52%,
+    var(--h-crimson) 68%,
+    var(--h-amber) 85%,
+    var(--h-emerald) 100%
   );
+  background-size: 200% 100%;
+  animation: h-stripe-drift 18s linear infinite;
 }
 
-/* Glass card */
-.glass-card {
-  background: rgba(255,255,255,0.72);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(27,43,107,0.1);
+@keyframes h-stripe-drift {
+  to {
+    background-position: -200% 0;
+  }
 }
 
-/* Chat bubbles */
-.chat-bubble-bot {
-  background: var(--off-white);
-  border: 1px solid rgba(27,43,107,0.1);
-  border-radius: 0 16px 16px 16px;
-  color: var(--text-dark);
-}
-.chat-bubble-user {
-  background: var(--navy);
-  border-radius: 16px 0 16px 16px;
-  color: white;
+/* ── Liquid glass ───────────────────────────────────────────────────────── */
+
+/*
+ * A single glass recipe used by the navbar, the agent panel, the cookie banner
+ * and the feature cards, so every floating surface reads as the same material.
+ */
+.h-glass {
+  position: relative;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.035) 48%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.13) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.22) inset,
+    0 24px 60px -24px rgba(0, 0, 0, 0.7);
 }
 
-/* Typing indicator */
-.typing-dot {
-  width: 7px; height: 7px;
-  background: var(--navy);
-  border-radius: 50%;
-  display: inline-block;
-  animation: typingDot 1.2s ease-in-out infinite;
+/* The moving specular highlight that makes the glass feel wet rather than flat. */
+.h-liquid::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--h-angle, 0deg),
+    transparent 0deg,
+    rgba(255, 255, 255, 0.55) 40deg,
+    transparent 110deg,
+    transparent 250deg,
+    rgba(245, 166, 35, 0.6) 300deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  animation: h-angle-spin 6s linear infinite;
 }
-.typing-dot:nth-child(2) { animation-delay: .2s; }
-.typing-dot:nth-child(3) { animation-delay: .4s; }
 
-/* Service card hover */
-.service-card {
-  transition: transform .3s ease, box-shadow .3s ease;
-}
-.service-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(27,43,107,0.15);
+.h-liquid:hover::before,
+.h-liquid:focus-within::before {
+  opacity: 1;
 }
 
-/* Nav link underline */
-.nav-link {
+@property --h-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes h-angle-spin {
+  to {
+    --h-angle: 360deg;
+  }
+}
+
+/* ── Spotlight cards ────────────────────────────────────────────────────── */
+
+/*
+ * --h-mx/--h-my are written by useSpotlight() on pointer move. Without JS the
+ * gradient simply sits at the card centre, so the card still looks intentional.
+ */
+.h-spotlight {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s ease;
+}
+
+.h-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    24rem circle at var(--h-mx, 50%) var(--h-my, 50%),
+    rgba(245, 166, 35, 0.16),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.h-spotlight:hover {
+  transform: translateY(-4px);
+}
+
+.h-spotlight:hover::after {
+  opacity: 1;
+}
+
+/* ── Texture ────────────────────────────────────────────────────────────── */
+
+.h-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* ── Video hero ─────────────────────────────────────────────────────────── */
+
+.h-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 1.1s ease,
+    transform 8s linear;
+}
+
+.h-hero-video[data-active="true"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.h-hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg, rgba(6, 9, 22, 0.94) 0%, rgba(8, 12, 30, 0.72) 42%, rgba(8, 12, 30, 0.34) 100%),
+    linear-gradient(to top, var(--page-background) 1%, transparent 34%);
+}
+
+/* ── Marquee ────────────────────────────────────────────────────────────── */
+
+.h-marquee {
+  display: flex;
+  width: max-content;
+  animation: h-marquee 38s linear infinite;
+}
+
+.h-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes h-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Animated underline for nav links ───────────────────────────────────── */
+
+.h-navlink {
   position: relative;
 }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px; left: 0; right: 0;
-  height: 2px;
-  background: var(--crimson);
-  transform: scaleX(0);
-  transition: transform .25s ease;
-  transform-origin: left;
-}
-.nav-link:hover::after { transform: scaleX(1); }
 
-/* Counter number */
-.counter-num {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-/* Chat widget */
-.chat-widget {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 1000;
-}
-.chat-window {
+.h-navlink::after {
+  content: "";
   position: absolute;
-  bottom: calc(100% + 1rem);
+  left: 0;
   right: 0;
-  width: 380px;
-  height: 520px;
-  border-radius: 16px;
-  box-shadow: 0 24px 80px rgba(27,43,107,0.22);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: white;
-  border: 1px solid rgba(27,43,107,0.12);
+  bottom: -0.35rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--h-amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (max-width: 640px) {
-  .chat-window {
+.h-navlink:hover::after,
+.h-navlink[data-open="true"]::after,
+.h-navlink[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* ── Chat transcript ────────────────────────────────────────────────────── */
+
+.h-bubble {
+  max-width: 88%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  animation: h-bubble-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.h-bubble strong {
+  font-weight: 600;
+}
+
+@keyframes h-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.h-typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: h-typing 1.1s ease-in-out infinite;
+}
+.h-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.h-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes h-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* ── Floating action buttons ────────────────────────────────────────────── */
+
+.h-fab {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.75);
+}
+
+.h-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+}
+
+.h-fab:focus-visible {
+  outline: 2px solid var(--h-amber);
+  outline-offset: 3px;
+}
+
+/* A slow halo so the WhatsApp button is noticeable without being obnoxious. */
+.h-fab-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid currentColor;
+  animation: h-halo 2.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes h-halo {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+
+/* Centred rather than bottom-left: the hero's call to action is left-aligned,
+   and a corner card sat straight on top of it. */
+.h-consent {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 10;
+  width: min(34rem, calc(100vw - 3rem));
+  transform: translate(-50%, 0);
+  animation: h-consent-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes h-consent-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+
+/* On a narrow screen the card spans nearly the full width, so it has to sit
+   above the agent launcher rather than beside it. */
+@media (max-width: 34rem) {
+  .h-consent {
+    left: 1rem;
+    bottom: calc(1.5rem + 4.25rem);
     width: calc(100vw - 2rem);
-    right: -1rem;
-    height: 460px;
+    transform: none;
+    animation-name: h-bubble-in;
+  }
+}
+
+/* Breakpoints mirror Once UI's own (s = 768, m = 1024) so custom elements hide
+   in step with components using its `hide` breakpoint props. */
+@media (max-width: 768px) {
+  .h-hide-s {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .h-hide-m {
+    display: none !important;
+  }
+}
+
+.h-hairline {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+}
+
+.h-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.h-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 0.75rem 1.25rem;
+  background: var(--h-amber);
+  color: #0b1230;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0;
+}
+
+.h-skip-link:focus {
+  left: 0;
+}
+
+/* ── Motion preferences ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .h-stripe,
+  .h-marquee,
+  .h-liquid::before,
+  .h-fab-pulse::after,
+  .h-typing span {
+    animation: none !important;
+  }
+  .h-hero-video {
+    transition: opacity 0.2s linear;
+    transform: none;
+  }
+  .h-spotlight:hover {
+    transform: none;
   }
 }

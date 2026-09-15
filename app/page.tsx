@@ -1,32 +1,31 @@
-import Navbar from '@/components/Navbar'
-import Hero from '@/components/Hero'
-import StatsBar from '@/components/StatsBar'
-import { About, Process, WhyUs, Testimonials, CTABand } from '@/components/Sections'
-import Services from '@/components/Services'
-import Portfolio from '@/components/Portfolio'
-import Contact from '@/components/Contact'
-import Footer from '@/components/Footer'
-import ChatBot from '@/components/ChatBot'
-import ScrollRevealProvider from '@/components/ScrollRevealProvider'
+import { Column } from '@once-ui-system/core'
 
-export default function Home() {
+import VideoHero from '@/components/sections/VideoHero'
+import StatsStrip from '@/components/sections/StatsStrip'
+import ServicesGrid from '@/components/sections/ServicesGrid'
+import ProjectsShowcase from '@/components/sections/ProjectsShowcase'
+import ProcessTimeline from '@/components/sections/ProcessTimeline'
+import WhyUs from '@/components/sections/WhyUs'
+import Testimonials from '@/components/sections/Testimonials'
+import Faq from '@/components/sections/Faq'
+import CtaBand from '@/components/sections/CtaBand'
+import ContactSection from '@/components/contact/ContactSection'
+
+export default function HomePage() {
   return (
-    <ScrollRevealProvider>
-      <Navbar />
-      <main>
-        <Hero />
-        <StatsBar />
-        <About />
-        <Services />
-        <Portfolio />
-        <Process />
+    <Column fillWidth horizontal="center">
+      <VideoHero />
+      <Column fillWidth horizontal="center" gap="128" paddingY="104">
+        <StatsStrip />
+        <ServicesGrid />
+        <ProjectsShowcase limit={6} />
+        <ProcessTimeline />
         <WhyUs />
         <Testimonials />
-        <CTABand />
-        <Contact />
-      </main>
-      <Footer />
-      <ChatBot />
-    </ScrollRevealProvider>
+        <Faq />
+        <CtaBand />
+        <ContactSection />
+      </Column>
+    </Column>
   )
 }
