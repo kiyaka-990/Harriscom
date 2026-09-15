@@ -15,8 +15,8 @@ interface Slide {
 }
 
 /**
- * Clips are rendered by scripts/generate-videos.mjs from Harriscom's own site
- * photography — see that file for the Ken Burns moves.
+ * Real footage, not moves over stills: three establishing shots of Nairobi and
+ * two of live construction work. See scripts/generate-videos.mjs for sources.
  */
 const SLIDES: Slide[] = [
   {
@@ -27,14 +27,14 @@ const SLIDES: Slide[] = [
     body: 'Fixed-price quotations from a measured bill of quantities, a named project manager on every job, and weekly reporting until handover.',
   },
   {
-    clip: 'hero-skyline',
+    clip: 'hero-structure',
     eyebrow: 'Nairobi & 12 counties',
     headline: 'Structures that',
     accent: 'hold their line.',
     body: 'Residential, commercial and industrial builds delivered to NCA standards with a resident engineer on site.',
   },
   {
-    clip: 'hero-roads',
+    clip: 'hero-ontime',
     eyebrow: 'Programme you can plan around',
     headline: 'On time is',
     accent: 'part of the spec.',
@@ -202,7 +202,7 @@ export default function VideoHero() {
                 boxShadow: '0 0 0 4px rgba(45,140,78,0.22)',
               }}
             />
-            <Text variant="label-default-s" onBackground="neutral-medium" style={{ letterSpacing: '0.08em' }}>
+            <Text variant="label-default-s" style={{ letterSpacing: '0.08em', color: 'var(--h-on-media-dim)' }}>
               {slide.eyebrow}
             </Text>
           </Row>
@@ -215,7 +215,7 @@ export default function VideoHero() {
               fontWeight: 700,
               lineHeight: 1.02,
               letterSpacing: '-0.03em',
-              color: 'var(--neutral-on-background-strong)',
+              color: 'var(--h-on-media)',
               margin: 0,
               animation: 'h-bubble-in 0.6s cubic-bezier(0.22,1,0.36,1) both',
             }}
@@ -236,8 +236,7 @@ export default function VideoHero() {
           <Text
             key={`body-${current}`}
             variant="body-default-l"
-            onBackground="neutral-medium"
-            style={{ maxWidth: '34rem', lineHeight: 1.7, animation: 'h-bubble-in 0.7s ease both' }}
+            style={{ maxWidth: '34rem', lineHeight: 1.7, animation: 'h-bubble-in 0.7s ease both', color: 'var(--h-on-media-dim)' }}
           >
             {slide.body}
           </Text>
@@ -270,7 +269,7 @@ export default function VideoHero() {
                 gap: 8,
                 padding: '0.95rem 1.7rem',
                 borderRadius: 999,
-                color: 'var(--neutral-on-background-strong)',
+                color: 'var(--h-on-media)',
                 fontWeight: 500,
                 textDecoration: 'none',
               }}
@@ -284,7 +283,7 @@ export default function VideoHero() {
                 alignItems: 'center',
                 gap: 8,
                 padding: '0.95rem 1.2rem',
-                color: 'var(--neutral-on-background-medium)',
+                color: 'var(--h-on-media-dim)',
                 fontWeight: 500,
                 textDecoration: 'none',
               }}
@@ -297,7 +296,7 @@ export default function VideoHero() {
             {trustPoints.map((point) => (
               <Row key={point} vertical="center" gap="8">
                 <Icon name="check" size="xs" onBackground="success-medium" />
-                <Text variant="body-default-xs" onBackground="neutral-weak">
+                <Text variant="body-default-xs" style={{ color: 'var(--h-on-media-faint)' }}>
                   {point}
                 </Text>
               </Row>

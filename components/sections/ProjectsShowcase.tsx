@@ -160,21 +160,20 @@ export default function ProjectsShowcase({
                       >
                         {project.category}
                       </span>
-                      <Text variant="body-default-xs" onBackground="neutral-weak">
+                      <Text variant="body-default-xs" style={{ color: 'var(--h-on-media-faint)' }}>
                         {project.year}
                       </Text>
                     </Row>
-                    <Text variant="heading-strong-s" onBackground="neutral-strong">
+                    <Text variant="heading-strong-s" style={{ color: 'var(--h-on-media)' }}>
                       {project.title}
                     </Text>
-                    <Text variant="body-default-xs" onBackground="neutral-medium">
+                    <Text variant="body-default-xs" style={{ color: 'var(--h-on-media-dim)' }}>
                       {project.location}
                     </Text>
                     <Text
                       variant="body-default-xs"
-                      onBackground="neutral-weak"
                       className="h-clamp-3"
-                      style={{ lineHeight: 1.6 }}
+                      style={{ lineHeight: 1.6, color: 'var(--h-on-media-faint)' }}
                     >
                       {project.summary}
                     </Text>

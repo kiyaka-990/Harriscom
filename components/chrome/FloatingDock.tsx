@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import AccessibilityPanel from '@/components/a11y/AccessibilityPanel'
 import { contact, whatsappLink } from '@/lib/site'
 
 const WHATSAPP_MESSAGE =
@@ -24,11 +25,10 @@ function ArrowUpGlyph() {
 }
 
 /**
- * Persistent quick actions: WhatsApp, and back-to-top once the visitor is far
- * enough down that the header is out of reach.
+ * Persistent quick actions, anchored bottom-left.
  *
- * The agent launcher sits below this stack at the same right margin, so the
- * bottom offset here has to clear it.
+ * Left, not right: the agent launcher owns the bottom-right corner, and three
+ * controls stacked under it buried the one that actually starts a conversation.
  */
 export default function FloatingDock() {
   const [showTop, setShowTop] = useState(false)
@@ -41,28 +41,18 @@ export default function FloatingDock() {
   }, [])
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        right: '1.5rem',
-        bottom: 'calc(1.5rem + 3.75rem + 0.75rem)',
-        zIndex: 7,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.75rem',
-        alignItems: 'center',
-      }}
-    >
+    <div className="h-dock">
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Back to top"
+        title="Back to top"
         className="h-fab h-glass"
         style={{
           opacity: showTop ? 1 : 0,
           pointerEvents: showTop ? 'auto' : 'none',
           transform: showTop ? 'none' : 'translateY(8px)',
-          background: 'rgba(255,255,255,0.06)',
+          background: 'var(--h-fab-bg)',
         }}
       >
         <ArrowUpGlyph />
@@ -84,6 +74,8 @@ export default function FloatingDock() {
       >
         <WhatsAppGlyph />
       </a>
+
+      <AccessibilityPanel />
     </div>
   )
 }

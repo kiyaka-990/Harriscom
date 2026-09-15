@@ -48,18 +48,42 @@ To extend what Harri knows, add to `lib/agent/knowledge.ts` and — if it is a q
 `faqs` in `lib/site.ts`. To add an intent, add a `Pattern` and an `answerFor` case in
 `lib/agent/brain.ts`.
 
+## Accessibility
+
+A panel behind the ♿ button (bottom-left) lets visitors set:
+
+- **Appearance** — dark, light, or follow the OS
+- **Contrast** — high contrast drops all translucency and promotes muted text to full strength
+- **Text size** — 90% / 100% / 110%, via Once UI's `data-scaling`
+- **Motion** — reduced stops every animation, matching `prefers-reduced-motion`
+- **Underline links**
+- **Read this page** — speaks the main content using the device's own voice (Web Speech API).
+  Nothing leaves the browser.
+
+Every preference is a `data-*` attribute on `<html>` (see `lib/a11y.ts`), applied by an inline script
+before first paint so there is no flash, and persisted in localStorage. The theme reuses Once UI's
+own `data-theme` key so its provider can never disagree with the toggle — which is also why
+`ThemeProvider` is given `theme="system"` rather than a pinned theme. An explicit theme prop is
+treated by Once UI as a forced mode and would override the toggle on every mount.
+
+Text sitting on media (the hero scrim, project image overlays) uses fixed `--h-on-media` tokens
+rather than theme tokens: those backgrounds stay dark in both themes, so theme-following text would
+turn dark-on-dark in light mode.
+
 ## Hero videos
 
-The carousel plays real `.mp4` clips, not a CSS effect. Harriscom has no stock footage, so
-`scripts/generate-videos.mjs` renders cinematic Ken Burns moves from their own site photography with
-a bundled ffmpeg:
+The carousel plays real footage — three establishing shots of Nairobi and two of live construction
+work. Sources and licences are in [MEDIA-CREDITS.md](MEDIA-CREDITS.md). The large originals are not
+committed; the script downloads them into `.media-cache/`, then trims, grades and size-caps them:
 
 ```bash
 node scripts/generate-videos.mjs           # render anything missing
 node scripts/generate-videos.mjs --force   # re-encode everything
 ```
 
-Output lands in `public/video/` (committed). Change the `CLIPS` array in the script to swap sources
+Output lands in `public/video/` (committed, ~7.6MB total, bitrate-capped for mobile data). To use
+Harriscom's own site footage instead — which would beat any stock library — drop files into
+`.media-cache/` as `hero-<name>.src.mp4` and re-run with `--force`. Change the `CLIPS` array to swap sources
 or moves. Only the first clip loads on page load; the rest attach as the carousel reaches them, the
 active clip is the only one playing, and everything pauses when the hero leaves the viewport.
 
@@ -77,11 +101,15 @@ None are required to run or build the site. All are optional:
 
 ## Design notes
 
-- Dark-only by design; the theme is pinned in `app/layout.tsx` rather than following the system.
+- Dark by default, with a light theme the visitor can switch to from the accessibility panel.
 - Brand colours (`--h-navy`, `--h-amber`, …) live in `app/globals.css`; Once UI's semantic tokens
   drive everything else. Brand is mapped to `indigo`, accent to `yellow`, neutral to `slate`.
-- Custom classes are all prefixed `h-` (`h-glass`, `h-liquid`, `h-spotlight`, `h-stripe`).
-- Every animation is disabled under `prefers-reduced-motion`, including hero video playback.
+- Custom classes are all prefixed `h-` (`h-glass`, `h-liquid`, `h-spotlight`, `h-stripe`). Every
+  surface colour is a `--h-*` variable retuned per theme, so one glass recipe serves both.
+- Every animation is disabled under `prefers-reduced-motion` **and** under the panel's reduced-motion
+  setting, including hero video playback.
+- The floating chrome is split deliberately: back-to-top, WhatsApp and accessibility sit bottom-left;
+  the agent launcher owns bottom-right on its own so it is never buried in a stack.
 
 ## Company details
 

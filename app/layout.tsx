@@ -10,7 +10,8 @@ import ScrollProgress from '@/components/chrome/ScrollProgress'
 import FloatingDock from '@/components/chrome/FloatingDock'
 import CookieConsent from '@/components/chrome/CookieConsent'
 import HarriAgent from '@/components/agent/HarriAgent'
-import { company, contact } from '@/lib/site'
+import { company, contact, faqs } from '@/lib/site'
+import { A11Y_INIT_SCRIPT } from '@/lib/a11y'
 
 const sora = Sora({
   subsets: ['latin'],
@@ -27,8 +28,10 @@ const inter = Inter({
 })
 
 /**
- * The site is designed dark-only, so the theme is pinned rather than following
- * the system preference — a light rendering of this palette does not exist.
+ * Defaults only. The visitor's accessibility panel owns data-theme and
+ * data-scaling at runtime (lib/a11y.ts), so neither is passed to ThemeProvider
+ * below — an explicit prop there is treated as a forced mode and would override
+ * the toggle on every mount.
  */
 const themeConfig = {
   theme: 'dark',
@@ -124,6 +127,17 @@ const structuredData = {
   priceRange: 'KES',
 }
 
+/** FAQ rich results are the cheapest organic surface a contractor can win. */
+const faqStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: { '@type': 'Answer', text: faq.a },
+  })),
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -138,10 +152,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+        />
+        {/* Applies the visitor's saved accessibility choices before first paint. */}
+        <script dangerouslySetInnerHTML={{ __html: A11Y_INIT_SCRIPT }} />
       </head>
       <body>
         <ThemeProvider
-          theme="dark"
+          theme="system"
           brand="indigo"
           accent="yellow"
           neutral="slate"
@@ -150,7 +170,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           border="playful"
           surface="translucent"
           transition="all"
-          scaling="100"
         >
           <LayoutProvider>
             <a className="h-skip-link" href="#main">

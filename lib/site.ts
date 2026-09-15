@@ -103,7 +103,7 @@ export const services: Service[] = [
     description:
       'Procurement and delivery of construction materials, hardware, tools and site equipment anywhere in Kenya. We hold supplier accounts for cement, steel, aggregate, roofing, tiles and plumbing, and pass bulk pricing through to contract clients.',
     accent: 'emerald',
-    image: '/images/project-7.jpg',
+    image: '/images/service-supplies.jpg',
     deliverables: [
       'Supplier sourcing and price comparison',
       'Bulk purchasing and consolidated delivery',
@@ -119,7 +119,7 @@ export const services: Service[] = [
     description:
       'Certified electrical and plumbing installations, upgrades and planned maintenance. Distribution boards, wiring, lighting design, water reticulation, drainage, pumps and solar water heating — all signed off by licensed engineers.',
     accent: 'teal',
-    image: '/images/project-8.jpg',
+    image: '/images/service-electrical.jpg',
     deliverables: [
       'Load assessment and MEP drawings',
       'First and second fix installation',
@@ -135,7 +135,7 @@ export const services: Service[] = [
     description:
       'Interiors designed around how the space will actually be used. Space planning, material and colour schemes, bespoke joinery, lighting and furnishing — delivered as a single package with the build so design intent survives to completion.',
     accent: 'violet',
-    image: '/images/project-9.jpg',
+    image: '/images/service-interior.jpg',
     deliverables: [
       'Space planning and 3D visualisation',
       'Material, finish and lighting schedules',

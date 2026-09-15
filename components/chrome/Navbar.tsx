@@ -14,13 +14,21 @@ interface MenuItem {
   label: string
   href: string
   description: string
-  badge?: string
 }
 
-const MENUS: Record<MenuId, { label: string; href: string; items: MenuItem[] }> = {
+interface Menu {
+  label: string
+  href: string
+  /** Two columns for the six services, one for the shorter menus. */
+  columns: 1 | 2
+  items: MenuItem[]
+}
+
+const MENUS: Record<MenuId, Menu> = {
   services: {
     label: 'Services',
     href: '/services',
+    columns: 2,
     items: services.map((service) => ({
       label: service.title,
       href: `/services/${service.slug}`,
@@ -30,21 +38,23 @@ const MENUS: Record<MenuId, { label: string; href: string; items: MenuItem[] }> 
   work: {
     label: 'Work',
     href: '/projects',
+    columns: 1,
     items: [
       { label: 'All projects', href: '/projects', description: 'Every job we have handed over.' },
-      { label: 'Construction', href: '/projects?filter=construction', description: 'Residential, commercial and industrial builds.' },
-      { label: 'Interiors', href: '/projects?filter=interior', description: 'Fit-out, refurbishment and design.' },
-      { label: 'Supply', href: '/projects?filter=supply', description: 'Materials and equipment contracts.' },
+      { label: 'Construction', href: '/projects?filter=construction', description: 'Residential, commercial, industrial.' },
+      { label: 'Interiors', href: '/projects?filter=interior', description: 'Fit-out and refurbishment.' },
+      { label: 'Supply', href: '/projects?filter=supply', description: 'Materials and equipment.' },
     ],
   },
   company: {
     label: 'Company',
     href: '/about',
+    columns: 1,
     items: [
       { label: 'About Harriscom', href: '/about', description: 'Who we are and how we got here.' },
-      { label: 'How we work', href: '/about#process', description: 'The six stages from enquiry to handover.' },
+      { label: 'How we work', href: '/about#process', description: 'Enquiry to handover in six stages.' },
       { label: 'Why choose us', href: '/about#why', description: 'What actually makes us different.' },
-      { label: 'FAQ', href: '/about#faq', description: 'Costs, timelines, payments and compliance.' },
+      { label: 'FAQ', href: '/about#faq', description: 'Costs, timelines and compliance.' },
     ],
   },
 }
@@ -105,7 +115,20 @@ export default function Navbar() {
     }
   }, [])
 
-  const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href))
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
+
+  const linkStyle = (active: boolean) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    padding: '0.5rem 0.8rem',
+    textDecoration: 'none',
+    color: active ? 'var(--neutral-on-background-strong)' : 'var(--neutral-on-background-medium)',
+    fontSize: '0.9rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap' as const,
+  })
 
   return (
     <>
@@ -117,10 +140,10 @@ export default function Navbar() {
         top="0"
         zIndex={9}
         style={{
-          background: scrolled ? 'rgba(8, 11, 26, 0.72)' : 'transparent',
+          background: scrolled ? 'var(--h-header-bg)' : 'transparent',
           backdropFilter: scrolled ? 'blur(20px) saturate(160%)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(160%)' : 'none',
-          borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.08)' : 'transparent'}`,
+          borderBottom: `1px solid ${scrolled ? 'var(--h-hairline-color)' : 'transparent'}`,
           transition: 'background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease',
         }}
         onMouseLeave={scheduleClose}
@@ -138,58 +161,134 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop navigation */}
-          <Row as="nav" gap="4" vertical="center" m={{ hide: true }} aria-label="Primary">
-            {MENU_IDS.map((id) => (
-              <div
-                key={id}
-                onMouseEnter={() => {
-                  cancelClose()
-                  setOpenMenu(id)
-                }}
-                onFocus={() => setOpenMenu(id)}
-              >
-                <Link
-                  href={MENUS[id].href}
-                  className="h-navlink"
-                  data-open={openMenu === id}
-                  aria-expanded={openMenu === id}
-                  aria-current={isActive(MENUS[id].href) ? 'page' : undefined}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '0.5rem 0.85rem',
-                    textDecoration: 'none',
-                    color: 'var(--neutral-on-background-medium)',
-                    fontSize: '0.9rem',
-                    fontWeight: 500,
+          <Row as="nav" gap="2" vertical="center" m={{ hide: true }} aria-label="Primary">
+            <Link
+              href="/"
+              className="h-navlink"
+              aria-current={isActive('/') ? 'page' : undefined}
+              onMouseEnter={() => setOpenMenu(null)}
+              style={linkStyle(isActive('/'))}
+            >
+              Home
+            </Link>
+
+            {MENU_IDS.map((id) => {
+              const menu = MENUS[id]
+              const open = openMenu === id
+              return (
+                <div
+                  key={id}
+                  style={{ position: 'relative' }}
+                  onMouseEnter={() => {
+                    cancelClose()
+                    setOpenMenu(id)
                   }}
+                  onFocus={() => setOpenMenu(id)}
                 >
-                  {MENUS[id].label}
-                  <Icon
-                    name="chevronDown"
-                    size="xs"
-                    style={{
-                      transform: openMenu === id ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.25s ease',
-                      opacity: 0.6,
-                    }}
-                  />
-                </Link>
-              </div>
-            ))}
+                  <Link
+                    href={menu.href}
+                    className="h-navlink"
+                    data-open={open}
+                    aria-expanded={open}
+                    aria-current={isActive(menu.href) ? 'page' : undefined}
+                    style={linkStyle(isActive(menu.href))}
+                  >
+                    {menu.label}
+                    <Icon
+                      name="chevronDown"
+                      size="xs"
+                      style={{
+                        transform: open ? 'rotate(180deg)' : 'none',
+                        transition: 'transform 0.25s ease',
+                        opacity: 0.6,
+                      }}
+                    />
+                  </Link>
+
+                  {/* Anchored dropdown, sized to its contents rather than the
+                      full page width. */}
+                  {open && (
+                    <div
+                      className="h-glass h-dropdown"
+                      onMouseEnter={cancelClose}
+                      onMouseLeave={scheduleClose}
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 0.6rem)',
+                        left: 0,
+                        width: menu.columns === 2 ? '34rem' : '19.5rem',
+                        maxWidth: 'calc(100vw - 3rem)',
+                        borderRadius: 16,
+                        padding: '0.6rem',
+                        zIndex: 20,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: menu.columns === 2 ? '1fr 1fr' : '1fr',
+                          gap: '0.2rem',
+                        }}
+                      >
+                        {menu.items.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="h-dropdown-item"
+                            style={{
+                              display: 'block',
+                              padding: '0.6rem 0.7rem',
+                              borderRadius: 10,
+                              textDecoration: 'none',
+                            }}
+                          >
+                            <Row vertical="center" gap="4">
+                              <Text variant="label-strong-s" onBackground="neutral-strong">
+                                {item.label}
+                              </Text>
+                            </Row>
+                            <Text
+                              variant="body-default-xs"
+                              onBackground="neutral-weak"
+                              style={{ display: 'block', marginTop: 2, lineHeight: 1.45 }}
+                            >
+                              {item.description}
+                            </Text>
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="h-hairline" style={{ margin: '0.5rem 0.2rem' }} />
+
+                      <Row horizontal="between" vertical="center" paddingX="8" paddingBottom="4" gap="8">
+                        <Text variant="body-default-xs" onBackground="neutral-weak">
+                          Free site visits in the Nairobi metro
+                        </Text>
+                        <Link
+                          href="/contact"
+                          style={{
+                            color: 'var(--h-amber)',
+                            fontSize: '0.78rem',
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          Book one →
+                        </Link>
+                      </Row>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+
             <Link
               href="/contact"
               className="h-navlink"
               aria-current={isActive('/contact') ? 'page' : undefined}
               onMouseEnter={() => setOpenMenu(null)}
-              style={{
-                padding: '0.5rem 0.85rem',
-                textDecoration: 'none',
-                color: 'var(--neutral-on-background-medium)',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-              }}
+              style={linkStyle(isActive('/contact'))}
             >
               Contact
             </Link>
@@ -198,7 +297,7 @@ export default function Navbar() {
           <Row gap="12" vertical="center">
             <a
               href={contact.phoneHref}
-              className="h-glass"
+              className="h-glass h-hide-m"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -288,88 +387,6 @@ export default function Navbar() {
             </button>
           </Row>
         </Row>
-
-        {/* Desktop mega panel */}
-        {openMenu && (
-          <Row
-            fillWidth
-            horizontal="center"
-            paddingX="24"
-            paddingBottom="16"
-            m={{ hide: true }}
-            onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
-          >
-            <Column
-              fillWidth
-              maxWidth="xl"
-              className="h-glass h-liquid"
-              radius="l"
-              padding="20"
-              style={{ animation: 'h-bubble-in 0.26s cubic-bezier(0.22,1,0.36,1) both' }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: openMenu === 'services' ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
-                  gap: '0.5rem',
-                }}
-              >
-                {MENUS[openMenu].items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="h-spotlight"
-                    style={{
-                      display: 'block',
-                      padding: '0.9rem 1rem',
-                      borderRadius: 14,
-                      textDecoration: 'none',
-                      border: '1px solid transparent',
-                    }}
-                    onMouseEnter={(event) => {
-                      event.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                      event.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                    }}
-                    onMouseLeave={(event) => {
-                      event.currentTarget.style.borderColor = 'transparent'
-                      event.currentTarget.style.background = 'transparent'
-                    }}
-                  >
-                    <Row vertical="center" gap="8" marginBottom="4">
-                      <Text variant="label-strong-m" onBackground="neutral-strong">
-                        {item.label}
-                      </Text>
-                      <Icon name="arrowUpRight" size="xs" onBackground="accent-weak" />
-                    </Row>
-                    <Text variant="body-default-xs" onBackground="neutral-weak">
-                      {item.description}
-                    </Text>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="h-hairline" style={{ margin: '0.85rem 0' }} />
-
-              <Row horizontal="between" vertical="center" paddingX="12" wrap gap="12">
-                <Text variant="body-default-xs" onBackground="neutral-weak">
-                  Free site visits anywhere in the Nairobi metro · Quotes within 24 hours
-                </Text>
-                <Link
-                  href="/contact"
-                  style={{
-                    color: 'var(--h-amber)',
-                    fontSize: '0.84rem',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                  }}
-                >
-                  Book a site visit →
-                </Link>
-              </Row>
-            </Column>
-          </Row>
-        )}
       </Column>
 
       {/* Mobile sheet */}
@@ -380,7 +397,7 @@ export default function Navbar() {
           position: 'fixed',
           inset: 0,
           zIndex: 8,
-          background: 'rgba(6, 9, 22, 0.97)',
+          background: 'var(--h-sheet-bg)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           paddingTop: 'calc(var(--h-nav-height) + 1rem)',
@@ -394,6 +411,21 @@ export default function Navbar() {
         }}
       >
         <Column padding="24" gap="8" fillWidth>
+          <Link
+            href="/"
+            onClick={() => setMobileOpen(false)}
+            style={{
+              padding: '1rem 0',
+              borderBottom: '1px solid var(--h-hairline-color)',
+              textDecoration: 'none',
+              color: 'var(--neutral-on-background-strong)',
+              fontSize: '1.15rem',
+              fontWeight: 600,
+            }}
+          >
+            Home
+          </Link>
+
           {MENU_IDS.map((id) => (
             <Column key={id} fillWidth>
               <Row
@@ -406,7 +438,7 @@ export default function Navbar() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                  borderBottom: '1px solid var(--h-hairline-color)',
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
@@ -451,7 +483,7 @@ export default function Navbar() {
             onClick={() => setMobileOpen(false)}
             style={{
               padding: '1rem 0',
-              borderBottom: '1px solid rgba(255,255,255,0.07)',
+              borderBottom: '1px solid var(--h-hairline-color)',
               textDecoration: 'none',
               color: 'var(--neutral-on-background-strong)',
               fontSize: '1.15rem',
